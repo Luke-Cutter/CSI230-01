@@ -1,0 +1,20 @@
+1. What has been your experience learning bash?
+My experience learning bash has been really interesting. I was starting from the ground up and really struggling with it. 
+I had to turn in a lot of assignments late because I had to continually update my script to get it to function the way I wanted
+it to work. Overall though, it has been incredibly helpful and I think I will use this in the future!
+
+
+2. What would have made the experience with learning it better, if there were problems with it, my instructions, or the assignments?
+I think it would have been easier if there was less dependence on the video lectures and more in class lectures that explained
+the code. Although, the videos are very clear and helpful in helping me understand bash.
+
+
+3. Approximately how much time did you spend working on assignments?
+I am not sure how long each one took but I spent at least 3-4 hours over many days per each assignment in order to fully
+understand and learn bash.
+
+
+4. Are you able to see how the programs used in this class or learning bash would be helpful for your career?
+Yes! Bash could definitely be useful in my career because I will definitely have to script eventually and this course is
+great for giving the fundamentals. Plus I enjoy using Linux and getting to poke around in Ubuntu, that is probably my favorite 
+part of this class. I thought it was cool that in Ubuntu you can connect your last.fm account to TuneBox! 
