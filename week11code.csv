@@ -1,0 +1,63 @@
+# Gets all of the currently running processes
+function Get-RunningProcesses {
+    Get-Process | Select-Object ProcessName, Path
+}
+
+# Gets all of the currently running services
+function Get-Services {
+    Get-WmiObject Win32_Service | Select-Object DisplayName, PathName
+}
+
+# Gets all of the open TCP sockets
+function Get-TcpSockets {
+    Get-NetTCPConnection
+}
+
+# Gets all User Accounts
+function Get-UserAccounts {
+    Get-WmiObject Win32_UserAccount | Select-Object Name, Domain, SID
+}
+
+# Gets the Newtork adapters configuration with IP and MAC
+function Get-NetworkAdapterConfiguration {
+    Get-WmiObject Win32_NetworkAdapterConfiguration | Select-Object Description, IPAddress, MACAddress
+}
+
+# Set the results location
+$resultsLocation = "C:\Users\champuser\Desktop"
+
+# Run commands and save results to CSV
+Get-RunningProcesses | Export-Csv -Path "$resultsLocation\processes.csv" -NoTypeInformation
+Get-Services | Export-Csv -Path "$resultsLocation\services.csv" -NoTypeInformation
+Get-TcpSockets | Export-Csv -Path "$resultsLocation\tcpSockets.csv" -NoTypeInformation
+Get-UserAccounts | Export-Csv -Path "$resultsLocation\userAccounts.csv" -NoTypeInformation
+Get-NetworkAdapterConfiguration | Export-Csv -Path "$resultsLocation\networkAdapterConfiguration.csv" -NoTypeInformation
+
+# Powershell cmdlets for incident investigation
+# 1. Get-EventLog: Retrieves events from the event log, useful for auditing and tracking system activities.
+# 2. Get-WmiObject Win32_OperatingSystem: Provides information about the operating system, including version and last boot time.
+# 3. Get-ItemPropertyValue: Fetches specific properties of an item, useful for checking file details.
+# 4. Get-Service: Gets the status of services on a local or remote computer.
+
+# Prompt user for the location to save checksum file
+$checksumLocation = $resultsLocation
+
+# Create checksums for CSV files and save to a checksum file
+Get-ChildItem -Path $resultsLocation -Filter *.csv | ForEach-Object {
+    $hash = Get-FileHash -Path $_.FullName -Algorithm SHA1
+    "$($hash.Hash)  $($hash.Path)" | Out-File -Append "$checksumLocation\checksums.txt"
+}
+
+# Powershell cmdlets for incident investigation
+# 1. Get-EventLog: Retrieves events from the event log, useful for auditing and tracking system activities.
+Get-EventLog -LogName System -After (Get-Date).AddDays(-7) | Export-Csv -Path "$resultsLocation\eventLog.csv" -NoTypeInformation
+
+# 2. Get-WmiObject Win32_OperatingSystem: Provides information about the operating system, including version and last boot time.
+Get-WmiObject Win32_OperatingSystem | Select-Object Caption, Version, LastBootUpTime | Export-Csv -Path "$resultsLocation\operatingSystemInfo.csv" -NoTypeInformation
+
+# 3. Get-ItemPropertyValue: Fetches specific properties of an item, useful for checking file details.
+$cmdFileVersion = (Get-Item "C:\Windows\System32\cmd.exe").VersionInfo.FileVersion
+$cmdFileVersion | Select-Object @{Name='FilePath';Expression={$_}}, FileVersion | Export-Csv -Path "$resultsLocation\cmdFileVersion.csv" -NoTypeInformation
+
+# 4. Get-Service: Gets the status of services on a local or remote computer.
+Get-Service | Select-Object DisplayName, ServiceName, Status | Export-Csv -Path "$resultsLocation\allServices.csv" -NoTypeInformation
